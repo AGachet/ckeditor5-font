@@ -122,7 +122,7 @@ export default class FontColorEditing extends Plugin {
 		editor.conversion.for('downcast').attributeToElement({
 			model: THEME_COLOR,
 			view: (modelAttributeValue, viewWriter) => viewWriter.createAttributeElement('span', {
-				'style': `color:${editor.config.get(`${FONT_COLOR}.paletteColors`).find(item => item.key === modelAttributeValue).color}`,
+				'style': `color:${editor.config.get(FONT_COLOR).themeColors.find(item => item.key === modelAttributeValue).color}`,
 				'theme-palette': modelAttributeValue
 			}, {priority: 8})
 		});

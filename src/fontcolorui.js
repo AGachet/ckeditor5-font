@@ -18,7 +18,7 @@ export default class FontColorUI extends Plugin {
 		this.componentName = FONT_COLOR;
 		this.icon = fontColorIcon;
 		this.dropdownLabel = t('Font Color');
-		this.columns = editor.config.get(`${this.componentName}.columns`);
+		this.columns = editor.config.get(this.componentName).columns;
 		this.colorTableView;
 	}
 

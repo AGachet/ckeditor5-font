@@ -132,6 +132,7 @@ export default class ColorTableView extends View {
 	_createColorsGrid(colors, attribute) {
 		const colorGrid = new ColorGridView(this.locale, {
 			colorDefinitions: colors.map(item => {
+				item.label = item.key ? '' : item.color;
 				item.options = {hasBorder: true};
 				return item;
 			}),
