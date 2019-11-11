@@ -24,6 +24,7 @@ export default class FontColorCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
+	 * @param {String} [options.key] Theme color key.
 	 * @param {String} [options.value] The value to apply.
 	 * @param {String} [options.attribute] Attribute to change: THEME_COLOR or EXACT_COLOR.
 	 * @fires execute
@@ -33,9 +34,9 @@ export default class FontColorCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		const value = options.value;
 		const attribute = options.attribute;
 		const removedAttribute = attribute === THEME_COLOR ? EXACT_COLOR : THEME_COLOR;
+		const value = attribute === THEME_COLOR ? options.key : options.value;
 
 		model.change(writer => {
 			if (value && attribute){
@@ -54,8 +55,9 @@ export default class FontColorCommand extends Command {
 					writer.removeSelectionAttribute(THEME_COLOR);
 					writer.removeSelectionAttribute(EXACT_COLOR);
 				} else {
-					const themeRanges = model.schema.getValidRanges(selection.getRanges(), THEME_COLOR);
-					const exactRanges = model.schema.getValidRanges(selection.getRanges(), EXACT_COLOR);
+					const ranges = selection.getRanges();
+					const themeRanges = model.schema.getValidRanges(ranges, THEME_COLOR);
+					const exactRanges = model.schema.getValidRanges(ranges, EXACT_COLOR);
 
 					for (const range of themeRanges) {
 						writer.removeAttribute(THEME_COLOR, range);
