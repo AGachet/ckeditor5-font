@@ -12,6 +12,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 import {EXACT_COLOR, THEME_COLOR} from '../constants';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 export default class ColorTableView extends View {
 	constructor(locale, {
