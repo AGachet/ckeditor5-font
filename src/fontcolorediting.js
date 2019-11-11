@@ -123,7 +123,7 @@ export default class FontColorEditing extends Plugin {
 			model: THEME_COLOR,
 			view: (modelAttributeValue, viewWriter) => {
 				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.key === modelAttributeValue);
-				viewWriter.createAttributeElement('span', {
+				return viewWriter.createAttributeElement('span', {
 					'style': `color:${themeColor ? themeColor.color : null}`,
 					'theme-palette': modelAttributeValue
 				}, {priority: 8})
