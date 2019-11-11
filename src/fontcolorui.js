@@ -70,7 +70,7 @@ export default class FontColorUI extends Plugin {
 
 			dropdownView.on('execute', (evt, data) => {
 				const color = data.value;
-				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.key === color);
+				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.color === color);
 				editor.execute(FONT_COLOR, {paletteKey: themeColor ? themeColor.key : null, color});
 				editor.editing.view.focus();
 			});
