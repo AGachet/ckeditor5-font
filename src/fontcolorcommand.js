@@ -13,7 +13,7 @@ export default class FontColorCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const attribute = doc.selection.hasAttribute(THEME_COLOR) ? THEME_COLOR : EXACT_COLOR;
+		const attribute = doc.selection.getAttribute(THEME_COLOR) ? THEME_COLOR : EXACT_COLOR;
 		this.value = doc.selection.getAttribute(attribute);
 		this.isEnabled = model.schema.checkAttributeInSelection(doc.selection, attribute);
 	}
@@ -35,7 +35,7 @@ export default class FontColorCommand extends Command {
 					const ranges = model.schema.getValidRanges(selection.getRanges(), attribute);
 					for (const range of ranges) {
 						writer.setAttribute(attribute, value, range);
-						writer.setAttribute(removedAttribute, value, range);
+						writer.removeAttribute(removedAttribute, range);
 					}
 				}
 			} else{

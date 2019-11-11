@@ -95,7 +95,7 @@ export default class FontColorEditing extends Plugin {
 			},
 			model: {
 				key: EXACT_COLOR,
-				value: viewElement => viewElement.hasAttribute('theme-palette') ? null : viewElement.getStyle('color').replace(/\s/g, '')
+				value: viewElement => viewElement.getAttribute('theme-palette') ? null : viewElement.getStyle('color').replace(/\s/g, '')
 			}
 		});
 
