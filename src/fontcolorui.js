@@ -42,7 +42,8 @@ export default class FontColorUI extends Plugin {
 				columns: this.columns,
 				removeButtonLabel: t('Remove color'),
 				themeColorsLabel: t('Theme colors'),
-				customColorLabel: t('Custom color')
+				customColorLabel: t('Custom color'),
+				exactColorsLabel: t('Exact colors'),
 			});
 
 			dropdownView.colorTableView = colorTableView;
@@ -68,8 +69,9 @@ export default class FontColorUI extends Plugin {
 			dropdownView.bind('isEnabled').to(fontColorCommand);
 
 			dropdownView.on('execute', (evt, data) => {
-				data.attribute = evt.source.attribute;
-				editor.execute(FONT_COLOR, data);
+				const color = data.value;
+				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.key === color);
+				editor.execute(FONT_COLOR, {paletteKey: themeColor ? themeColor.key : null, color});
 				editor.editing.view.focus();
 			});
 

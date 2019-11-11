@@ -17,26 +17,14 @@ export default class FontColorCommand extends Command {
 		this.value = doc.selection.getAttribute(attribute);
 		this.isEnabled = model.schema.checkAttributeInSelection(doc.selection, attribute);
 	}
-
-	/**
-	 * Executes the command. Applies the `value` of the {@link #attributeKey} to the selection.
-	 * If no `value` is passed, it removes the attribute from the selection.
-	 *
-	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.key] Theme color key.
-	 * @param {String} [options.value] The value to apply.
-	 * @param {String} [options.attribute] Attribute to change: THEME_COLOR or EXACT_COLOR.
-	 * @fires execute
-	 */
-	execute(options = {}) {
+	execute(colorItem = {}) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
-		const attribute = options.attribute;
-		const removedAttribute = attribute === THEME_COLOR ? EXACT_COLOR : THEME_COLOR;
-		const value = attribute === THEME_COLOR ? options.key : options.value;
+		const attribute = colorItem.paletteKey ? THEME_COLOR : EXACT_COLOR;
+		const removedAttribute = colorItem.paletteKey ? EXACT_COLOR : THEME_COLOR;
+		const value = colorItem.paletteKey || colorItem.color;
 
 		model.change(writer => {
 			if (value && attribute){

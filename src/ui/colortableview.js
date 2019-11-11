@@ -11,7 +11,6 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
-import {EXACT_COLOR, THEME_COLOR} from '../constants';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 export default class ColorTableView extends View {
@@ -21,14 +20,15 @@ export default class ColorTableView extends View {
 		columns,
 		removeButtonLabel,
 		themeColorsLabel,
+		exactColorsLabel,
 		customColorLabel
 	}) {
 		super(locale);
 
 		this.items = this.createCollection();
 
-		this.exactColors = exactColors;
 		this.themeColors = themeColors;
+		this.exactColors = exactColors.filter(item => !themeColors.find(tc => tc.color === item.color));
 		this.removeButtonLabel = removeButtonLabel;
 
 		this.focusTracker = new FocusTracker();
@@ -39,7 +39,7 @@ export default class ColorTableView extends View {
 
 		this.columns = columns;
 
-		this.themeColorsGrid = this._createColorsGrid(this.themeColors, THEME_COLOR);
+		this.themeColorsGrid = this._createColorsGrid(this.themeColors);
 
 		this._focusCycler = new FocusCycler({
 			focusables: this.items,
@@ -77,10 +77,25 @@ export default class ColorTableView extends View {
 			}
 		});
 
+		this.items.add(themeColorsLabelView);
+
 		this.items.add(this.themeColorsGrid);
 
 		if (exactColors.length > 0) {
-			this.exactColorsGrid = this._createColorsGrid(this.exactColors, EXACT_COLOR);
+			const exactColorsLabelView = new LabelView(this.locale);
+			exactColorsLabelView.text = exactColorsLabel;
+			exactColorsLabelView.extendTemplate({
+				attributes: {
+					class: [
+						'ck',
+						'ck-color-grid__label'
+					]
+				}
+			});
+
+			this.items.add(exactColorsLabelView);
+
+			this.exactColorsGrid = this._createColorsGrid(this.exactColors);
 			this.items.add(this.exactColorsGrid);
 		}
 	}
@@ -129,7 +144,7 @@ export default class ColorTableView extends View {
 		return buttonView;
 	}
 
-	_createColorsGrid(colors, attribute) {
+	_createColorsGrid(colors) {
 		const colorGrid = new ColorGridView(this.locale, {
 			colorDefinitions: colors.map(item => {
 				item.label = item.key ? '' : item.color;
@@ -138,7 +153,6 @@ export default class ColorTableView extends View {
 			}),
 			columns: this.columns,
 		});
-		colorGrid.attribute = attribute;
 		colorGrid.delegate('execute').to(this);
 
 		return colorGrid;

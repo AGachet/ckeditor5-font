@@ -28,6 +28,10 @@ msgctxt "Label for the list of theme colors."
 msgid "Theme colors"
 msgstr "Colores del tema"
 
-msgctxt "Label fro the custom color."
+msgctxt "Label for the custom color."
 msgid "Custom color"
 msgstr "Seleccionar color personalizado"
+
+msgctxt "Label for non-theme colors."
+msgid "Exact colors"
+msgstr "Otros colores"

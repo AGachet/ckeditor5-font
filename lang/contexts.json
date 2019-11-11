@@ -2,5 +2,6 @@
 	"Font Color": "Label of a button that allows selecting a font color.",
 	"Remove color": "Label or a button that removes the color from the text.",
   	"Theme colors": "Label for the list of theme colors.",
-  	"Custom color": "Label fro the custom color."
+  	"Custom color": "Label for the custom color.",
+  	"Exact colors": "Label for non-theme colors."
 }
