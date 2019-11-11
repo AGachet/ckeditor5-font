@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-font",
+  "name": "@solomoto/ckeditor5-font-color",
   "version": "15.0.0",
-  "description": "Font feature for CKEditor 5.",
+  "description": "Font color feature for CKEditor 5 with color picker.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -15,7 +15,6 @@
     "@ckeditor/ckeditor5-utils": "^15.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^15.0.0",
     "@ckeditor/ckeditor5-engine": "^15.0.0",
     "@ckeditor/ckeditor5-highlight": "^15.0.0",
     "@ckeditor/ckeditor5-paragraph": "^15.0.0",
@@ -42,6 +41,7 @@
     "theme"
   ],
   "scripts": {
+	"installAndPublish": "npm install && npm publish",
     "lint": "eslint --quiet '**/*.js'"
   },
   "lint-staged": {
@@ -52,10 +52,5 @@
   "eslintIgnore": [
     "src/lib/**",
     "packages/**"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  }
+  ]
 }
