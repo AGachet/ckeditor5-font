@@ -1,52 +1,62 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import {jscolor} from './jscolor';
 
-function preventDropdownClosing(view, closeDropdownOnBlur) {
-	return view.bindTemplate.to(evt => {
-		closeDropdownOnBlur(false);
-		evt.stopPropagation();
-	});
-}
+const JsColorOptions = {
+	hash: true,
+	borderRadius: 2,
+	padding: 5,
+	uppercase: false
+};
 
 export default class ColorInputView extends View {
-	constructor(locale, closeDropdownOnBlur) {
+	constructor(locale) {
 		super(locale);
 
 		const bind = this.bindTemplate;
-		const input = document.createElement('input');
-		this.colorPicker = new jscolor(input, {hash:true, borderRadius: 2, padding: 5});
-		this.colorPicker.fromString('#000000');
-
 		this.set('value');
+		this.set('parent');
 
 		this.setTemplate({
-			tag: 'div',
-			children:[
-				input
-			],
+			tag: 'input',
 			attributes: {
-				class: ['ck', 'ck-color-input']
+				class: ['ck', 'ck-color-input'],
 			},
 			on: {
-				mousedown: preventDropdownClosing(this, closeDropdownOnBlur),
-				change: bind.to('change')
+				blur: bind.to('blur')
 			}
 		});
 	}
 
-	setValue(newValue) {
-		this.colorPicker.fromString(!newValue ? '#000000' : newValue);
+	setInputValue(newValue) {
+		const value = !newValue ? '#000000' : newValue;
+		if (this.colorPicker) {
+			this.colorPicker.fromString(value);
+		} else if (this.element){
+			this.element.value = value;
+		}
 	}
 
-	getValue() {
-		return this.colorPicker.toHEXString();
+	getInputValue() {
+		if (this.colorPicker) {
+			return this.colorPicker.toHEXString();
+		} else if (this.element){
+			return this.element.value;
+		}
 	}
 
 	render() {
 		super.render();
-		this.setValue(this.value);
+
 		this.on('change:value', (evt, name, value) => {
-			this.setValue(value);
+			this.setInputValue(value);
+		});
+
+		this.on('change:parent', (evt, name, value) => {
+			this.colorPicker = new jscolor(this.element, {
+				...JsColorOptions,
+				container: value
+			});
+			this.setInputValue(this.value);
 		});
 	}
 }
