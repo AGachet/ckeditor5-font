@@ -156,7 +156,7 @@ export default class ColorTableView extends View {
 
 	_createColorInputView(closeDropdownOnBlur) {
 		const colorInputView = new ColorInputView(this.locale, closeDropdownOnBlur);
-		colorInputView.on('input', () => {
+		colorInputView.on('change', () => {
 			this.fire('execute', {value: colorInputView.getValue()});
 			closeDropdownOnBlur(true);
 		});
