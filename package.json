@@ -1,6 +1,6 @@
 {
   "name": "@solomoto/ckeditor5-font-color",
-  "version": "15.0.10",
+  "version": "15.0.11",
   "description": "Font color feature for CKEditor 5 with color picker.",
   "keywords": [
     "ckeditor",

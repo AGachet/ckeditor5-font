@@ -5,7 +5,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontColorCommand from './fontcolorcommand';
-import {EXACT_COLOR, THEME_COLOR, FONT_COLOR, THEME_COLOR_ATTRIBUTE} from './constants';
+import {EXACT_COLOR, THEME_COLOR, FONT_COLOR, THEME_COLOR_ATTRIBUTE, DEFAULT_COLORS} from './constants';
 
 export default class FontColorEditing extends Plugin {
 	static get pluginName() {
