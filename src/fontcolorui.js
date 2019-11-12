@@ -6,17 +6,14 @@
 import {FONT_COLOR} from './constants';
 import fontColorIcon from '../theme/icons/font-color.svg';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import {createDropdown} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './ui/colortableview';
-
-//Remove whitespace from colors so that euqality comparison works for them
-function removeWhitespaceFromColor(colorItem){
-	if (!colorItem || !colorItem.color){
-		return colorItem;
-	}
-	colorItem.color = colorItem.color.replace(/\s/g, '');
-	return colorItem;
-}
+import {
+	closeDropdownOnExecute,
+	createDropdown,
+	focusDropdownContentsOnArrows,
+	makeDropdownBlurHandler,
+	removeWhitespaceFromColor
+} from './utils';
 
 export default class FontColorUI extends Plugin {
 	constructor(editor) {
@@ -28,6 +25,8 @@ export default class FontColorUI extends Plugin {
 	static get pluginName() {
 		return 'FontColorUI';
 	}
+
+
 
 	init() {
 		const editor = this.editor;
@@ -43,11 +42,17 @@ export default class FontColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add(this.componentName, locale => {
 			const dropdownView = createDropdown(locale);
+			const closeDropdownOnBlur = makeDropdownBlurHandler(dropdownView);
+
+			closeDropdownOnBlur(true);
+			closeDropdownOnExecute(dropdownView);
+			focusDropdownContentsOnArrows(dropdownView);
 
 			this.colorTableView = new ColorTableView(locale, {
 				exactColors,
 				themeColors,
 				columns,
+				closeDropdownOnBlur: closeDropdownOnBlur,
 				removeButtonLabel: translate('Remove color'),
 				themeColorsLabel: translate('Theme colors'),
 				customColorLabel: translate('Custom color'),

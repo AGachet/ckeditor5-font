@@ -1,7 +1,14 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
+function preventDropdownClosing(view, closeDropdownOnBlur) {
+	return view.bindTemplate.to(evt => {
+		closeDropdownOnBlur(false);
+		evt.stopPropagation();
+	});
+}
+
 export default class ColorInputView extends View {
-	constructor(locale) {
+	constructor(locale, closeDropdownOnBlur) {
 		super(locale);
 
 		const bind = this.bindTemplate;
@@ -13,11 +20,14 @@ export default class ColorInputView extends View {
 			tag: 'input',
 			attributes: {
 				class: [
+					'ck',
+					'ck-color-input',
 					bind.if('isEnabled', 'ck-enabled'),
 				],
 				type: 'color'
 			},
 			on: {
+				mousedown: preventDropdownClosing(this, closeDropdownOnBlur),
 				input: bind.to('input')
 			}
 		});
@@ -27,7 +37,7 @@ export default class ColorInputView extends View {
 		this.element.value = !newValue ? '#000000' : newValue;
 	}
 
-	getValue(){
+	getValue() {
 		return this.element.value;
 	}
 
