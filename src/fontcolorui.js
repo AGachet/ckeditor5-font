@@ -9,17 +9,20 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import {createDropdown} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './ui/colortableview';
 
+//Remove whitespace from colors so that euqality comparison works for them
+function removeWhitespaceFromColor(colorItem){
+	if (!colorItem || !colorItem.color){
+		return colorItem;
+	}
+	colorItem.color = colorItem.color.replace(/\s/g, '');
+	return colorItem;
+}
+
 export default class FontColorUI extends Plugin {
 	constructor(editor) {
 		super(editor);
-
-		const t = editor.locale.t;
-
+		this.commandName = FONT_COLOR;
 		this.componentName = FONT_COLOR;
-		this.icon = fontColorIcon;
-		this.dropdownLabel = t('Font Color');
-		this.columns = editor.config.get(this.componentName).columns;
-		this.colorTableView;
 	}
 
 	static get pluginName() {
@@ -28,35 +31,37 @@ export default class FontColorUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
-		const fontColorCommand = editor.commands.get(FONT_COLOR);
-		const exactColors = editor.config.get(this.componentName).exactColors;
-		const themeColors = editor.config.get(this.componentName).themeColors;
+		const translate = editor.t;
+		const fontColorCommand = editor.commands.get(this.commandName);
+		const columns = editor.config.get(this.componentName).columns;
+		const themeColors = editor.config.get(this.componentName).themeColors
+			.map(removeWhitespaceFromColor);
+		const exactColors = editor.config.get(this.componentName).exactColors
+			.map(removeWhitespaceFromColor)
+			.filter(ec => !themeColors.find(tc => tc.color === ec.color)); //Remove theme colors from exactColors array
 
 		// Register the UI component.
 		editor.ui.componentFactory.add(this.componentName, locale => {
 			const dropdownView = createDropdown(locale);
-			const colorTableView = new ColorTableView(locale, {
+
+			this.colorTableView = new ColorTableView(locale, {
 				exactColors,
 				themeColors,
-				columns: this.columns,
-				removeButtonLabel: t('Remove color'),
-				themeColorsLabel: t('Theme colors'),
-				customColorLabel: t('Custom color'),
-				exactColorsLabel: t('Exact colors'),
+				columns,
+				removeButtonLabel: translate('Remove color'),
+				themeColorsLabel: translate('Theme colors'),
+				customColorLabel: translate('Custom color'),
+				exactColorsLabel: translate('Exact colors'),
 			});
 
-			dropdownView.colorTableView = colorTableView;
-			dropdownView.panelView.children.add(colorTableView);
-			colorTableView.delegate('execute').to(dropdownView, 'execute');
+			dropdownView.panelView.children.add(this.colorTableView);
 
-			this.colorTableView = colorTableView;
-
+			this.colorTableView.delegate('execute').to(dropdownView);
 			this.colorTableView.bind('selectedColor').to(fontColorCommand, 'value');
 
 			dropdownView.buttonView.set({
-				label: this.dropdownLabel,
-				icon: this.icon,
+				label: translate('Font Color'),
+				icon: fontColorIcon,
 				tooltip: true
 			});
 
@@ -70,8 +75,9 @@ export default class FontColorUI extends Plugin {
 
 			dropdownView.on('execute', (evt, data) => {
 				const color = data.value;
-				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.color === color);
-				editor.execute(FONT_COLOR, {paletteKey: themeColor ? themeColor.key : null, color});
+				const themeColor = themeColors.find(item => item.color === color);
+				const paletteKey = themeColor ? themeColor.key : null;
+				editor.execute(this.commandName, {paletteKey, color});
 				editor.editing.view.focus();
 			});
 

@@ -5,7 +5,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontColorCommand from './fontcolorcommand';
-import {EXACT_COLOR, THEME_COLOR, FONT_COLOR} from './constants';
+import {EXACT_COLOR, THEME_COLOR, FONT_COLOR, THEME_COLOR_ATTRIBUTE} from './constants';
 
 export default class FontColorEditing extends Plugin {
 	static get pluginName() {
@@ -16,73 +16,8 @@ export default class FontColorEditing extends Plugin {
 		super(editor);
 
 		editor.config.define(FONT_COLOR, {
-			themeColors: [
-				{
-					key: 'defaultColor1', color: 'hsl(0, 0%, 0%)',
-				},
-				{
-					key: 'defaultColor2', color: 'hsl(0, 0%, 15%)',
-				},
-				{
-					key: 'defaultColor3', color: 'hsl(0, 0%, 30%)',
-				},
-				{
-					key: 'defaultColor4', color: 'hsl(0, 0%, 50%)',
-				},
-				{
-					key: 'defaultColor5', color: 'hsl(0, 0%, 75%)',
-				},
-				{
-					key: 'defaultColor6', color: 'hsl(0, 0%, 100%)',
-				}
-			],
-			exactColors: [
-				{
-					color: 'hsl(0, 0%, 0%)'
-				},
-				{
-					color: 'hsl(0, 0%, 30%)'
-				},
-				{
-					color: 'hsl(0, 0%, 60%)'
-				},
-				{
-					color: 'hsl(0, 0%, 90%)'
-				},
-				{
-					color: 'hsl(0, 0%, 100%)'
-				},
-				{
-					color: 'hsl(0, 75%, 60%)'
-				},
-				{
-					color: 'hsl(30, 75%, 60%)'
-				},
-				{
-					color: 'hsl(60, 75%, 60%)'
-				},
-				{
-					color: 'hsl(90, 75%, 60%)'
-				},
-				{
-					color: 'hsl(120, 75%, 60%)'
-				},
-				{
-					color: 'hsl(150, 75%, 60%)'
-				},
-				{
-					color: 'hsl(180, 75%, 60%)'
-				},
-				{
-					color: 'hsl(210, 75%, 60%)'
-				},
-				{
-					color: 'hsl(240, 75%, 60%)'
-				},
-				{
-					color: 'hsl(270, 75%, 60%)'
-				}
-			],
+			themeColors: [],
+			exactColors: DEFAULT_COLORS.map(color => ({color})),
 			columns: 6
 		});
 
@@ -90,12 +25,12 @@ export default class FontColorEditing extends Plugin {
 			view: {
 				name: 'span',
 				styles: {
-					'color': /[\s\S]+/
+					color: /[\s\S]+/
 				}
 			},
 			model: {
 				key: EXACT_COLOR,
-				value: viewElement => viewElement.getAttribute('theme-palette') ? null : viewElement.getStyle('color').replace(/\s/g, '')
+				value: viewEl => viewEl.getAttribute(THEME_COLOR_ATTRIBUTE) ? null : viewEl.getStyle('color').replace(/\s/g, '')
 			}
 		});
 
@@ -103,30 +38,34 @@ export default class FontColorEditing extends Plugin {
 			view: {
 				name: 'span',
 				attributes: {
-					'theme-palette': /defaultColor[1-6]/
+					[THEME_COLOR_ATTRIBUTE]: /\S+/
 				}
 			},
 			model: {
 				key: THEME_COLOR,
-				value: viewElement => viewElement.getAttribute('theme-palette')
+				value: viewElement => viewElement.getAttribute(THEME_COLOR_ATTRIBUTE)
 			}
 		});
 
 		editor.conversion.for('downcast').attributeToElement({
 			model: EXACT_COLOR,
-			view: (modelAttributeValue, viewWriter) => viewWriter.createAttributeElement('span', {
-				'style': `color:${modelAttributeValue}`
-			}, {priority: 7})
+			view: (modelAttributeValue, viewWriter) => {
+				return viewWriter.createAttributeElement('span', {
+					style: `color:${modelAttributeValue}`
+				}, {priority: 7})
+			}
 		});
 
 		editor.conversion.for('downcast').attributeToElement({
 			model: THEME_COLOR,
 			view: (modelAttributeValue, viewWriter) => {
-				const themeColor = editor.config.get(FONT_COLOR).themeColors.find(item => item.key === modelAttributeValue);
+				const themeColors = editor.config.get(FONT_COLOR).themeColors;
+				const themeColor = themeColors.find(item => item.key === modelAttributeValue);
+				const color = themeColor ? themeColor.color : null;
 				return viewWriter.createAttributeElement('span', {
-					'style': `color:${themeColor ? themeColor.color : null}`,
-					'theme-palette': modelAttributeValue
-				}, {priority: 8})
+					[THEME_COLOR_ATTRIBUTE]: modelAttributeValue,
+					style: `color:${color}`
+				}, {priority: 7})
 			}
 		});
 

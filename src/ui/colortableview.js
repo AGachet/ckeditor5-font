@@ -12,6 +12,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ColorInputView from './colorinputview';
 
 export default class ColorTableView extends View {
 	constructor(locale, {
@@ -28,18 +29,14 @@ export default class ColorTableView extends View {
 		this.items = this.createCollection();
 
 		this.themeColors = themeColors;
-		this.exactColors = exactColors.filter(item => !themeColors.find(tc => tc.color === item.color));
-		this.removeButtonLabel = removeButtonLabel;
+		this.exactColors = exactColors;
+		this.columns = columns;
 
 		this.focusTracker = new FocusTracker();
 
 		this.keystrokes = new KeystrokeHandler();
 
 		this.set('selectedColor');
-
-		this.columns = columns;
-
-		this.themeColorsGrid = this._createColorsGrid(this.themeColors);
 
 		this._focusCycler = new FocusCycler({
 			focusables: this.items,
@@ -56,55 +53,39 @@ export default class ColorTableView extends View {
 		this.setTemplate({
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-color-table'
-				]
+				class: ['ck', 'ck-color-table']
 			},
 			children: this.items
 		});
 
-		this.items.add(this._removeColorButton());
+		this.items.add(this._createRemoveColorButton(removeButtonLabel));
 
-		const themeColorsLabelView = new LabelView(this.locale);
-		themeColorsLabelView.text = themeColorsLabel;
-		themeColorsLabelView.extendTemplate({
-			attributes: {
-				class: [
-					'ck',
-					'ck-color-grid__label'
-				]
-			}
-		});
-
-		this.items.add(themeColorsLabelView);
-
-		this.items.add(this.themeColorsGrid);
+		if (themeColors.length > 0){
+			this.themeColorsGrid = this._createColorsGrid(this.themeColors);
+			this.items.add(this._createLabel(themeColorsLabel));
+			this.items.add(this.themeColorsGrid);
+		}
 
 		if (exactColors.length > 0) {
-			const exactColorsLabelView = new LabelView(this.locale);
-			exactColorsLabelView.text = exactColorsLabel;
-			exactColorsLabelView.extendTemplate({
-				attributes: {
-					class: [
-						'ck',
-						'ck-color-grid__label'
-					]
-				}
-			});
-
-			this.items.add(exactColorsLabelView);
-
 			this.exactColorsGrid = this._createColorsGrid(this.exactColors);
+			this.items.add(this._createLabel(exactColorsLabel));
 			this.items.add(this.exactColorsGrid);
 		}
+
+		this.colorInputView = this._createColorInputView();
+		this.items.add(this._createLabel(customColorLabel));
+		this.items.add(this.colorInputView);
 	}
 
 	updateSelectedColors() {
-		this.themeColorsGrid.selectedColor = this.selectedColor;
-		if (this.exactColorsGrid) {
-			this.exactColorsGrid.selectedColor = this.selectedColor;
+		let selectedColor = this._getActualSelectedColor();
+		if (this.themeColorsGrid){
+			this.themeColorsGrid.selectedColor = selectedColor;
 		}
+		if (this.exactColorsGrid) {
+			this.exactColorsGrid.selectedColor = selectedColor;
+		}
+		this.colorInputView.set({value: selectedColor});
 	}
 
 	render() {
@@ -126,35 +107,57 @@ export default class ColorTableView extends View {
 		this._focusCycler.focusLast();
 	}
 
-	_removeColorButton() {
-		const buttonView = new ButtonView();
+	//If selectedColor is theme color, returns it's actual current value
+	_getActualSelectedColor(){
+		const themeColor = this.themeColors.find(item => item.key === this.selectedColor);
+		return themeColor ? themeColor.color : this.selectedColor;
+	}
 
+	_createRemoveColorButton(removeButtonLabel) {
+		const buttonView = new ButtonView();
 		buttonView.set({
 			withText: true,
 			icon: removeButtonIcon,
 			tooltip: true,
-			label: this.removeButtonLabel
+			label: removeButtonLabel
 		});
 
 		buttonView.class = 'ck-color-table__remove-color';
 		buttonView.on('execute', () => {
 			this.fire('execute', {value: null});
 		});
-
 		return buttonView;
 	}
 
+	_createLabel(text){
+		const labelView = new LabelView(this.locale);
+		labelView.text = text;
+		labelView.extendTemplate({
+			attributes: {
+				class: ['ck', 'ck-color-grid__label']
+			}
+		});
+		return labelView;
+	}
+
 	_createColorsGrid(colors) {
-		const colorGrid = new ColorGridView(this.locale, {
+		const colorGridView = new ColorGridView(this.locale, {
 			colorDefinitions: colors.map(item => {
-				item.label = item.key ? '' : item.color;
+				item.label = item.color;
 				item.options = {hasBorder: true};
 				return item;
 			}),
 			columns: this.columns,
 		});
-		colorGrid.delegate('execute').to(this);
+		colorGridView.delegate('execute').to(this);
+		return colorGridView;
+	}
 
-		return colorGrid;
+	_createColorInputView() {
+		const colorInputView = new ColorInputView(this.locale);
+		colorInputView.on('input', () => {
+			this.fire('execute', {value: colorInputView.getValue()});
+		});
+		return colorInputView;
 	}
 }

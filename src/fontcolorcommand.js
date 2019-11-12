@@ -17,25 +17,28 @@ export default class FontColorCommand extends Command {
 		this.value = doc.selection.getAttribute(attribute);
 		this.isEnabled = model.schema.checkAttributeInSelection(doc.selection, attribute);
 	}
-	execute(colorItem = {}) {
+
+
+	execute({paletteKey, color}) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
-		const attribute = colorItem.paletteKey ? THEME_COLOR : EXACT_COLOR;
-		const removedAttribute = colorItem.paletteKey ? EXACT_COLOR : THEME_COLOR;
-		const value = colorItem.paletteKey || colorItem.color;
+		const changedAttr = paletteKey ? THEME_COLOR : EXACT_COLOR;
+		const removedAttr = paletteKey ? EXACT_COLOR : THEME_COLOR;
+		const attrValue = paletteKey || color;
 
 		model.change(writer => {
-			if (value && attribute){
+			if (attrValue){
 				if (selection.isCollapsed) {
-					writer.setSelectionAttribute(attribute, value);
-					writer.removeSelectionAttribute(removedAttribute);
+					writer.setSelectionAttribute(changedAttr, attrValue);
+					writer.removeSelectionAttribute(removedAttr);
 				} else {
-					const ranges = model.schema.getValidRanges(selection.getRanges(), attribute);
+					const ranges = model.schema.getValidRanges(selection.getRanges(), changedAttr);
+
 					for (const range of ranges) {
-						writer.setAttribute(attribute, value, range);
-						writer.removeAttribute(removedAttribute, range);
+						writer.setAttribute(changedAttr, attrValue, range);
+						writer.removeAttribute(removedAttr, range);
 					}
 				}
 			} else{
