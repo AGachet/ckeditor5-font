@@ -35,3 +35,7 @@ msgstr "Seleccionar color personalizado"
 msgctxt "Label for non-theme colors."
 msgid "Exact colors"
 msgstr "Otros colores"
+
+msgctxt "Label for select color button."
+msgid "Select color"
+msgstr "Seleccionar"

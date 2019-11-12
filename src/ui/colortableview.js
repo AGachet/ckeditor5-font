@@ -19,7 +19,7 @@ export default class ColorTableView extends View {
 		exactColors,
 		themeColors,
 		columns,
-		closeDropdownOnBlur,//TODO: cleanup
+		closeButtonLabel,
 		removeButtonLabel,
 		themeColorsLabel,
 		exactColorsLabel,
@@ -73,7 +73,7 @@ export default class ColorTableView extends View {
 			this.items.add(this.exactColorsGrid);
 		}
 
-		this.colorInputView = this._createColorInputView();
+		this.colorInputView = this._createColorInputView(closeButtonLabel);
 		this.items.add(this._createLabel(customColorLabel));
 		this.items.add(this.colorInputView);
 	}
@@ -156,8 +156,8 @@ export default class ColorTableView extends View {
 		return colorGridView;
 	}
 
-	_createColorInputView() {
-		const colorInputView = new ColorInputView(this.locale);
+	_createColorInputView(closeButtonLabel) {
+		const colorInputView = new ColorInputView(this.locale, closeButtonLabel);
 		colorInputView.on('blur', () => {
 			let value = colorInputView.getInputValue();
 			this.fire('execute', {value});

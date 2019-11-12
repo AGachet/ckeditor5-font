@@ -1333,8 +1333,8 @@ var jsc = {
 
 			// wrap
 			p.wrap.style.clear = 'both';
-			p.wrap.style.width = (dims[0] + 2 * THIS.borderWidth) + 'px';
-			p.wrap.style.height = (dims[1] + 2 * THIS.borderWidth) + 'px';
+			p.wrap.style.width = (dims[0] + 2 * THIS.borderWidth) + 'px !important';
+			p.wrap.style.height = (dims[1] + 2 * THIS.borderWidth) + 'px !important';
 			p.wrap.style.zIndex = THIS.zIndex;
 
 			// picker
@@ -1350,7 +1350,7 @@ var jsc = {
 
 			// picker border
 			p.boxB.style.position = 'relative';
-			p.boxB.style.border = THIS.borderWidth + 'px solid';
+			p.boxB.style.border = THIS.borderWidth + 'px solid !important';
 			p.boxB.style.borderColor = THIS.borderColor;
 			p.boxB.style.background = THIS.backgroundColor;
 			jsc.setBorderRadius(p.boxB, borderRadius + 'px');
@@ -1376,7 +1376,7 @@ var jsc = {
 			p.padB.style.position = 'absolute';
 			p.padB.style.left = THIS.padding + 'px';
 			p.padB.style.top = THIS.padding + 'px';
-			p.padB.style.border = THIS.insetWidth + 'px solid';
+			p.padB.style.border = THIS.insetWidth + 'px solid !important';
 			p.padB.style.borderColor = THIS.insetColor;
 
 			// pad mouse area
@@ -1451,7 +1451,7 @@ var jsc = {
 			p.sldB.style.position = 'absolute';
 			p.sldB.style.right = THIS.padding + 'px';
 			p.sldB.style.top = THIS.padding + 'px';
-			p.sldB.style.border = THIS.insetWidth + 'px solid';
+			p.sldB.style.border = THIS.insetWidth + 'px solid !important';
 			p.sldB.style.borderColor = THIS.insetColor;
 
 			// slider mouse area
@@ -1468,7 +1468,7 @@ var jsc = {
 			// slider pointer inner and outer border
 			p.sldPtrIB.style.border =
 				p.sldPtrOB.style.border =
-					THIS.pointerBorderWidth + 'px solid ' + THIS.pointerBorderColor;
+					THIS.pointerBorderWidth + 'px solid ' + THIS.pointerBorderColor + ' !important';
 
 			// slider pointer outer border
 			p.sldPtrOB.style.position = 'absolute';
@@ -1476,7 +1476,7 @@ var jsc = {
 			p.sldPtrOB.style.top = '0';
 
 			// slider pointer middle border
-			p.sldPtrMB.style.border = THIS.pointerThickness + 'px solid ' + THIS.pointerColor;
+			p.sldPtrMB.style.border = THIS.pointerThickness + 'px solid ' + THIS.pointerColor + '!important';
 
 			// slider pointer spacer
 			p.sldPtrS.style.width = THIS.sliderSize + 'px';
@@ -1494,7 +1494,7 @@ var jsc = {
 			p.btn.style.bottom = THIS.padding + 'px';
 			p.btn.style.padding = '0 15px';
 			p.btn.style.height = THIS.buttonHeight + 'px';
-			p.btn.style.border = THIS.insetWidth + 'px solid';
+			p.btn.style.border = THIS.insetWidth + 'px solid !important';
 			setBtnBorder();
 			p.btn.style.color = THIS.buttonColor;
 			p.btn.style.font = '12px sans-serif';

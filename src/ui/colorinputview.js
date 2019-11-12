@@ -4,15 +4,22 @@ import {jscolor} from './jscolor';
 const JsColorOptions = {
 	hash: true,
 	borderRadius: 2,
-	padding: 5,
-	uppercase: false
+	borderWidth: 0,
+	padding: 8,
+	uppercase: false,
+	closable: true,
+	overwriteImportant: true,
+	width: 150
 };
 
 export default class ColorInputView extends View {
-	constructor(locale) {
+	constructor(locale, closeButtonLabel) {
 		super(locale);
 
 		const bind = this.bindTemplate;
+
+		this.closeButtonLabel = closeButtonLabel;
+
 		this.set('value');
 		this.set('parent');
 
@@ -54,6 +61,7 @@ export default class ColorInputView extends View {
 		this.on('change:parent', (evt, name, value) => {
 			this.colorPicker = new jscolor(this.element, {
 				...JsColorOptions,
+				closeText: this.closeButtonLabel,
 				container: value
 			});
 			this.setInputValue(this.value);

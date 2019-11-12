@@ -7,13 +7,8 @@ import {FONT_COLOR} from './constants';
 import fontColorIcon from '../theme/icons/font-color.svg';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ColorTableView from './ui/colortableview';
-import {
-	closeDropdownOnExecute,
-	createDropdown,
-	focusDropdownContentsOnArrows,
-	makeDropdownBlurHandler,
-	removeWhitespaceFromColor
-} from './utils';
+import {removeWhitespaceFromColor} from './utils';
+import {createDropdown} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 export default class FontColorUI extends Plugin {
 	constructor(editor) {
@@ -25,8 +20,6 @@ export default class FontColorUI extends Plugin {
 	static get pluginName() {
 		return 'FontColorUI';
 	}
-
-
 
 	init() {
 		const editor = this.editor;
@@ -42,17 +35,12 @@ export default class FontColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add(this.componentName, locale => {
 			const dropdownView = createDropdown(locale);
-			const closeDropdownOnBlur = makeDropdownBlurHandler(dropdownView);
-
-			closeDropdownOnBlur(true);
-			closeDropdownOnExecute(dropdownView);
-			focusDropdownContentsOnArrows(dropdownView);
 
 			this.colorTableView = new ColorTableView(locale, {
 				exactColors,
 				themeColors,
 				columns,
-				closeDropdownOnBlur: closeDropdownOnBlur,
+				closeButtonLabel: translate('Select color'),
 				removeButtonLabel: translate('Remove color'),
 				themeColorsLabel: translate('Theme colors'),
 				customColorLabel: translate('Custom color'),
