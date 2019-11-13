@@ -7,8 +7,14 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontColorCommand from './fontcolorcommand';
 import {FONT_COLOR, THEME_COLOR_ATTRIBUTE, DEFAULT_COLORS} from './constants';
 
-function renderUpcastElement(){
-	return viewEl => viewEl.getAttribute(THEME_COLOR_ATTRIBUTE) || viewEl.getStyle('color').replace(/\s/g, '');
+function renderUpcastElement(hasPaletteKey){
+	return viewEl => {
+		if (hasPaletteKey){
+			return viewEl.getAttribute(THEME_COLOR_ATTRIBUTE);
+		} else{
+			return viewEl.getStyle('color').replace(/\s/g, '')
+		}
+	};
 }
 
 function renderDowncastElement(themeColors){
@@ -17,9 +23,9 @@ function renderDowncastElement(themeColors){
 		const attributes = themeColor ? {
 			[THEME_COLOR_ATTRIBUTE]: themeColor.paletteKey,
 			style: `color:${themeColor.color}`
-		} : {
+		} : modelAttributeValue ? {
 			style: `color:${modelAttributeValue}`
-		};
+		} : {};
 		return viewWriter.createAttributeElement('span', attributes, {priority: 7});
 	}
 }
@@ -45,16 +51,25 @@ export default class FontColorEditing extends Plugin {
 					[THEME_COLOR_ATTRIBUTE]: /\S+/
 				}
 			},
-			upcastAlso: [{
+			model: {
+				key: FONT_COLOR,
+				value: renderUpcastElement(true)
+			},
+			converterPriority: 'normal'
+		});
+
+		editor.conversion.for('upcast').elementToAttribute({
+			view: {
 				name: 'span',
 				styles: {
 					color: /[\s\S]+/
 				}
-			}],
+			},
 			model: {
 				key: FONT_COLOR,
-				value: renderUpcastElement()
-			}
+				value: renderUpcastElement(false)
+			},
+			converterPriority: 'low'
 		});
 
 		editor.conversion.for('downcast').attributeToElement({
@@ -64,7 +79,7 @@ export default class FontColorEditing extends Plugin {
 
 		editor.commands.add(FONT_COLOR, new FontColorCommand(editor));
 
-		editor.model.schema.extend('$text', {allowAttributes: [FONT_COLOR]});
+		editor.model.schema.extend('$text', {allowAttributes: FONT_COLOR});
 
 		editor.model.schema.setAttributeProperties(FONT_COLOR, {
 			isFormatting: true,
