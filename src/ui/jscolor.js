@@ -996,7 +996,7 @@ var jsc = {
 					var fgColor = this.isLight() ? '#000' : '#FFF';
 
 					this.styleElement.style.backgroundImage = 'none';
-					this.styleElement.style.setProperty('backgroundColor', bgColor, 'important');
+					this.styleElement.style.setProperty('background-color', bgColor, 'important');
 					this.styleElement.style.setProperty('color', fgColor, 'important');
 				}
 			}

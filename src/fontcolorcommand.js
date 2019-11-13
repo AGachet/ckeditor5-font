@@ -27,18 +27,18 @@ export default class FontColorCommand extends Command {
 		model.change(writer => {
 			if (selection.isCollapsed) {
 				if (value) {
-					writer.setSelectionAttribute(this.attributeKey, value);
+					writer.setSelectionAttribute(FONT_COLOR, value);
 				} else {
-					writer.removeSelectionAttribute(this.attributeKey);
+					writer.removeSelectionAttribute(FONT_COLOR);
 				}
 			} else {
-				const ranges = model.schema.getValidRanges(selection.getRanges(), this.attributeKey);
+				const ranges = model.schema.getValidRanges(selection.getRanges(), FONT_COLOR);
 
 				for (const range of ranges) {
 					if (value) {
-						writer.setAttribute(this.attributeKey, value, range);
+						writer.setAttribute(FONT_COLOR, value, range);
 					} else {
-						writer.removeAttribute(this.attributeKey, range);
+						writer.removeAttribute(FONT_COLOR, range);
 					}
 				}
 			}

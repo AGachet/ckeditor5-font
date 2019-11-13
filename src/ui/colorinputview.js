@@ -8,7 +8,8 @@ const JsColorOptions = {
 	padding: 8,
 	uppercase: false,
 	closable: true,
-	width: 150
+	width: 150,
+	buttonHeight: 24
 };
 
 export default class ColorInputView extends View {
