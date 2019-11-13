@@ -23,7 +23,8 @@ export default class FontColorUI extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const translate = editor.t;
+		//It is important for this function to be called t() - otherwise translations wont be added during build
+		const t = editor.t;
 		const fontColorCommand = editor.commands.get(this.commandName);
 		const columns = editor.config.get(this.componentName).columns;
 		const themeColors = editor.config.get(this.componentName).themeColors
@@ -40,11 +41,11 @@ export default class FontColorUI extends Plugin {
 				exactColors,
 				themeColors,
 				columns,
-				closeButtonLabel: translate('Select color'),
-				removeButtonLabel: translate('Remove color'),
-				themeColorsLabel: translate('Theme colors'),
-				customColorLabel: translate('Custom color'),
-				exactColorsLabel: translate('Exact colors'),
+				closeButtonLabel: t('Select color'),
+				removeButtonLabel: t('Remove color'),
+				themeColorsLabel: t('Theme colors'),
+				customColorLabel: t('Custom color'),
+				exactColorsLabel: t('Exact colors'),
 			});
 
 			dropdownView.panelView.children.add(this.colorTableView);
@@ -53,7 +54,7 @@ export default class FontColorUI extends Plugin {
 			this.colorTableView.bind('selectedColor').to(fontColorCommand, 'value');
 
 			dropdownView.buttonView.set({
-				label: translate('Font Color'),
+				label: t('Font Color'),
 				icon: fontColorIcon,
 				tooltip: true
 			});
@@ -69,7 +70,7 @@ export default class FontColorUI extends Plugin {
 			dropdownView.on('execute', (evt, data) => {
 				const color = data.value;
 				const themeColor = themeColors.find(item => item.color === color);
-				const paletteKey = themeColor ? themeColor.key : null;
+				const paletteKey = themeColor ? themeColor.paletteKey : null;
 				editor.execute(this.commandName, {paletteKey, color});
 				editor.editing.view.focus();
 			});

@@ -874,7 +874,6 @@ var jsc = {
 		this.uppercase = true; // whether to show the color code in upper case
 		this.onFineChange = null; // called instantly every time the color changes (value can be either a function or a string with javascript code)
 		this.activeClass = 'jscolor-active'; // class to be set to the target element when a picker window is open on it
-		this.overwriteImportant = false; // whether to overwrite colors of styleElement using !important
 		this.minS = 0; // min allowed saturation (0 - 100)
 		this.maxS = 100; // max allowed saturation (0 - 100)
 		this.minV = 0; // min allowed value (brightness) (0 - 100)
@@ -997,15 +996,8 @@ var jsc = {
 					var fgColor = this.isLight() ? '#000' : '#FFF';
 
 					this.styleElement.style.backgroundImage = 'none';
-					this.styleElement.style.backgroundColor = bgColor;
-					this.styleElement.style.color = fgColor;
-
-					if (this.overwriteImportant) {
-						this.styleElement.setAttribute('style',
-							'background: ' + bgColor + ' !important; ' +
-							'color: ' + fgColor + ' !important;'
-						);
-					}
+					this.styleElement.style.setProperty('backgroundColor', bgColor, 'important');
+					this.styleElement.style.setProperty('color', fgColor, 'important');
 				}
 			}
 			if (!(flags & jsc.leavePad) && isPickerOwner()) {
@@ -1333,8 +1325,8 @@ var jsc = {
 
 			// wrap
 			p.wrap.style.clear = 'both';
-			p.wrap.style.width = (dims[0] + 2 * THIS.borderWidth) + 'px !important';
-			p.wrap.style.height = (dims[1] + 2 * THIS.borderWidth) + 'px !important';
+			p.wrap.style.width = (dims[0] + 2 * THIS.borderWidth) + 'px';
+			p.wrap.style.height = (dims[1] + 2 * THIS.borderWidth) + 'px';
 			p.wrap.style.zIndex = THIS.zIndex;
 
 			// picker
@@ -1350,7 +1342,7 @@ var jsc = {
 
 			// picker border
 			p.boxB.style.position = 'relative';
-			p.boxB.style.border = THIS.borderWidth + 'px solid !important';
+			p.boxB.style.setProperty('border', THIS.borderWidth + 'px solid', 'important');
 			p.boxB.style.borderColor = THIS.borderColor;
 			p.boxB.style.background = THIS.backgroundColor;
 			jsc.setBorderRadius(p.boxB, borderRadius + 'px');
@@ -1376,7 +1368,7 @@ var jsc = {
 			p.padB.style.position = 'absolute';
 			p.padB.style.left = THIS.padding + 'px';
 			p.padB.style.top = THIS.padding + 'px';
-			p.padB.style.border = THIS.insetWidth + 'px solid !important';
+			p.padB.style.setProperty('border', THIS.insetWidth + 'px solid', 'important');
 			p.padB.style.borderColor = THIS.insetColor;
 
 			// pad mouse area
@@ -1451,7 +1443,7 @@ var jsc = {
 			p.sldB.style.position = 'absolute';
 			p.sldB.style.right = THIS.padding + 'px';
 			p.sldB.style.top = THIS.padding + 'px';
-			p.sldB.style.border = THIS.insetWidth + 'px solid !important';
+			p.sldB.style.setProperty('border', THIS.insetWidth + 'px solid', 'important');
 			p.sldB.style.borderColor = THIS.insetColor;
 
 			// slider mouse area
@@ -1466,9 +1458,8 @@ var jsc = {
 			p.sldM.style.cursor = 'default';
 
 			// slider pointer inner and outer border
-			p.sldPtrIB.style.border =
-				p.sldPtrOB.style.border =
-					THIS.pointerBorderWidth + 'px solid ' + THIS.pointerBorderColor + ' !important';
+			p.sldPtrIB.style.setProperty('border', THIS.pointerBorderWidth + 'px solid ' + THIS.pointerBorderColor, 'important');
+			p.sldPtrOB.style.setProperty('border', THIS.pointerBorderWidth + 'px solid ' + THIS.pointerBorderColor, 'important');
 
 			// slider pointer outer border
 			p.sldPtrOB.style.position = 'absolute';
@@ -1476,7 +1467,7 @@ var jsc = {
 			p.sldPtrOB.style.top = '0';
 
 			// slider pointer middle border
-			p.sldPtrMB.style.border = THIS.pointerThickness + 'px solid ' + THIS.pointerColor + '!important';
+			p.sldPtrMB.style.setProperty('border', THIS.pointerThickness + 'px solid ' + THIS.pointerColor, 'important');
 
 			// slider pointer spacer
 			p.sldPtrS.style.width = THIS.sliderSize + 'px';
@@ -1494,13 +1485,13 @@ var jsc = {
 			p.btn.style.bottom = THIS.padding + 'px';
 			p.btn.style.padding = '0 15px';
 			p.btn.style.height = THIS.buttonHeight + 'px';
-			p.btn.style.border = THIS.insetWidth + 'px solid !important';
+			p.btn.style.setProperty('border', THIS.insetWidth + 'px solid', 'important');
 			setBtnBorder();
 			p.btn.style.color = THIS.buttonColor;
 			p.btn.style.font = '12px sans-serif';
 			p.btn.style.textAlign = 'center';
 			try {
-				p.btn.style.cursor = 'pointer';
+				p.btn.style.setProperty('cursor', 'pointer', 'important');
 			} catch(eOldIE) {
 				p.btn.style.cursor = 'hand';
 			}

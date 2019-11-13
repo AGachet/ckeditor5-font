@@ -4,10 +4,7 @@
  */
 
 export const FONT_COLOR = 'fontColor';
-export const EXACT_COLOR = 'exactColor';
-export const THEME_COLOR = 'themeColor';
 export const THEME_COLOR_ATTRIBUTE = 'theme-palette';
-
 export const DEFAULT_COLORS = [
 	"#1abc9c",
 	"#2ecc71",

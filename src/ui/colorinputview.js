@@ -8,7 +8,6 @@ const JsColorOptions = {
 	padding: 8,
 	uppercase: false,
 	closable: true,
-	overwriteImportant: true,
 	width: 150
 };
 

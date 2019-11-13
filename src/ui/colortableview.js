@@ -112,7 +112,7 @@ export default class ColorTableView extends View {
 
 	//If selectedColor is theme color, returns it's actual current value
 	_getActualSelectedColor(){
-		const themeColor = this.themeColors.find(item => item.key === this.selectedColor);
+		const themeColor = this.themeColors.find(item => item.paletteKey === this.selectedColor);
 		return themeColor ? themeColor.color : this.selectedColor;
 	}
 
