@@ -7,14 +7,40 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontColorCommand from './fontcolorcommand';
 import {FONT_COLOR, THEME_COLOR_ATTRIBUTE, DEFAULT_COLORS} from './constants';
 
-function renderUpcastElement(hasPaletteKey){
-	return viewEl => {
-		if (hasPaletteKey){
-			return viewEl.getAttribute(THEME_COLOR_ATTRIBUTE);
-		} else{
-			return viewEl.getStyle('color').replace(/\s/g, '')
+function renderUpcastElement(){
+	return element => {
+		const paletteKey = element.getAttribute(THEME_COLOR_ATTRIBUTE);
+		if (paletteKey){
+			return paletteKey;
 		}
+		const color = element.getStyle('color');
+		if (color){
+			return color.replace(/\s/g, '');
+		}
+		return null;
 	};
+}
+
+function matchUpcastElement(){
+	return element => {
+		if (element.name === 'span'){
+			const color = element.getStyle('color');
+			const paletteKey = element.getAttribute(THEME_COLOR_ATTRIBUTE);
+			if (paletteKey){
+				return {
+					name: true,
+					attributes: [THEME_COLOR_ATTRIBUTE]
+				};
+			}
+			if (color){
+				return {
+					name: true,
+					styles: ['color']
+				};
+			}
+		}
+		return null;
+	}
 }
 
 function renderDowncastElement(themeColors){
@@ -45,31 +71,11 @@ export default class FontColorEditing extends Plugin {
 		});
 
 		editor.conversion.for('upcast').elementToAttribute({
-			view: {
-				name: 'span',
-				attributes: {
-					[THEME_COLOR_ATTRIBUTE]: /\S+/
-				}
-			},
+			view: matchUpcastElement(),
 			model: {
 				key: FONT_COLOR,
-				value: renderUpcastElement(true)
-			},
-			converterPriority: 'normal'
-		});
-
-		editor.conversion.for('upcast').elementToAttribute({
-			view: {
-				name: 'span',
-				styles: {
-					color: /[\s\S]+/
-				}
-			},
-			model: {
-				key: FONT_COLOR,
-				value: renderUpcastElement(false)
-			},
-			converterPriority: 'low'
+				value: renderUpcastElement()
+			}
 		});
 
 		editor.conversion.for('downcast').attributeToElement({
