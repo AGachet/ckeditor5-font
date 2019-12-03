@@ -1,11 +1,7 @@
 CKEditor 5 font color feature with color picker
 ============================
 
-<br>
-
 This package implements support for the font color feature with color picker.
-
-*
 
 ## License
 
