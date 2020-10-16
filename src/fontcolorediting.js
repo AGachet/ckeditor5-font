@@ -44,15 +44,15 @@ function matchUpcastElement(){
 }
 
 function renderDowncastElement(themeColors){
-	return (modelAttributeValue, viewWriter) => {
+	return ( modelAttributeValue, { writer } ) => {
 		const themeColor = themeColors.find(item => item.paletteKey === modelAttributeValue);
 		const attributes = themeColor ? {
 			[THEME_COLOR_ATTRIBUTE]: themeColor.paletteKey,
 			style: `color:${themeColor.color}`
 		} : modelAttributeValue ? {
-			style: `color:${modelAttributeValue}`
+			style: `color:${ modelAttributeValue }`
 		} : {};
-		return viewWriter.createAttributeElement('span', attributes, {priority: 7});
+		return writer.createAttributeElement('span', attributes, {priority: 7});
 	}
 }
 
